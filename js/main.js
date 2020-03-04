@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function(){
           popupClose = document.querySelector('.popup-close'),
           popupContent = document.querySelector('.popup-content'),
           width = document.documentElement.clientWidth;
-    let animInterval;
+    let monitorCenter, popupContentWidth;
     
     // let popupAnimate = () => {
     //   popupContent.style.left = '0';
@@ -96,79 +96,35 @@ document.addEventListener('DOMContentLoaded', function(){
     //       popupContent.style.left = i + 'px';
     //     }
     // };
-    popupContent.style.left = '0';
-    console.dir(window);
-    console.log(width);
+
     popupBtn.forEach((elem) => {
       elem.addEventListener('click', () => {
         popup.style.display = 'block';
-        /* let start = Date.now(); // запомнить время начала
-        let timer = setInterval(function() {
-          // сколько времени прошло с начала анимации?
-          let timePassed = Date.now() - start;
-          if (timePassed >= 2000) {
-            clearInterval(timer); // закончить анимацию через 2 секунды
-            return;
+        function animate(draw, duration=1200){
+          let startTime = performance.now();
+          function step(currentTime){
+            let progress = (currentTime - startTime) / duration;
+            draw(progress);
+            if(progress < 1) {
+              requestAnimationFrame(step);
+            }
           }
-          // отрисовать анимацию на момент timePassed, прошедший с начала анимации
-          draw();
-        }, 17);
-        // в то время как timePassed идёт от 0 до 2000
-        // left изменяет значение от 0px до 400px
-        function draw() {
-          popupContent.style.left = width / 2 / 2000 + 'px';
-        } */
-
-        // function animate({timing, draw, duration}) {
-
-        //   let start = performance.now();
-        
-        //   requestAnimationFrame(function animate(time) {
-        //     // timeFraction изменяется от 0 до 1
-        //     let timeFraction = (time - start) / duration;
-        //     if (timeFraction > 1) timeFraction = 1;
-        
-        //     // вычисление текущего состояния анимации
-        //     let progress = timing(timeFraction);
-        
-        //     draw(progress); // отрисовать её
-        
-        //     if (timeFraction < 1) {
-        //       requestAnimationFrame(animate);
-        //     }
-        
-        //   });
-        // }
-
-        
-        function animate({duration, draw, timing}) {
-          let start = performance.now();
-          requestAnimationFrame(function animate(time) {
-            let timeFraction = (time - start) / duration;
-            if (timeFraction > 1) {
-              timeFraction = 1;
-            }
-        
-            let progress = timing(timeFraction);
-        
-            if (timeFraction < 1) {
-              requestAnimationFrame(animate);
-            }
-        
-          });
+          requestAnimationFrame(step);
         }
-
-        animate({
-          duration: 1000,
-          timing(timeFraction) {
-            return timeFraction;
-          },
-          draw(progress) {
-            popupContent.style.left = progress + 'px';
-          }
-        });
-
-
+        function animateRes(begin, end){
+          animate(
+            (progress) => {
+              popupContent.style.left = Math.ceil((end - begin) * progress + begin) + 'px';
+            }
+          );
+        }
+        popupContentWidth = popupContent.offsetWidth;
+        monitorCenter = width / 2 - popupContentWidth / 2;
+        if(width > 768){
+          console.log(width);
+          animateRes(0, monitorCenter);
+          popupContent.style.left = '0';
+        }
 
       });
     });
@@ -176,8 +132,6 @@ document.addEventListener('DOMContentLoaded', function(){
     popupClose.addEventListener('click', () => {
       popup.style.display = 'none';
     });
-
-    console.log(popupContent.getBoundingClientRect());
 
   };
 
