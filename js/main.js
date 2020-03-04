@@ -60,23 +60,27 @@ document.addEventListener('DOMContentLoaded', function(){
   const toggleMenu = () => {
     const btnMenu = document.querySelector('.menu'),
           menu = document.querySelector('menu'),
-          closeBtn = document.querySelector('.close-btn'),
           menuItems = menu.querySelectorAll('ul>li');
 
     const handlerMenu = () => {
-      // проверка на наличие свойства при первом открытии страницы и дальше при перелючении меню туда-сюда
-      // if(!menu.style.transform || menu.style.transform === `translate(-100%)`){
-      //   menu.style.transform = `translate(0)`;
-      // } else {
-      //   menu.style.transform = `translate(-100%)`;
-      // }
-
-      // вариант с toggle для класса
       menu.classList.toggle('active-menu');
     };
+
     btnMenu.addEventListener('click', handlerMenu);
-    closeBtn.addEventListener('click', handlerMenu);
-    menuItems.forEach((elem) => elem.addEventListener('click', handlerMenu));
+    menu.addEventListener('click', (event) => {
+      let target = event.target;
+      if(target.classList.contains('close-btn')){
+        handlerMenu();
+      } else {
+        target = target.closest('menu');
+        if (target){
+          menuItems.forEach((elem) =>{
+            handlerMenu();
+          });
+        }
+      }
+    });
+
   };
   toggleMenu();
 
@@ -84,21 +88,27 @@ document.addEventListener('DOMContentLoaded', function(){
   const togglePopup = () => {
     const popup = document.querySelector('.popup'),
           popupBtn = document.querySelectorAll('.popup-btn'),
-          popupClose = document.querySelector('.popup-close'),
           popupContent = document.querySelector('.popup-content'),
           width = document.documentElement.clientWidth;
     let animInterval;
   
-
-    console.dir(window);
-    console.log(width);
     popupBtn.forEach((elem) => {
       elem.addEventListener('click', () => {
         popup.style.display = 'block';
 
       });
     });
-
+    popup.addEventListener('click', (event)=>{ /* если клик за пределами попапа, то закрыть его */
+      let target = event.target;
+      if(target.classList.contains('popup-close')){
+        popup.style.display = 'none';
+      } else {
+        target = target.closest('.popup-content');
+        if(!target){
+          popup.style.display = 'none';
+        } 
+      } 
+    });
   
   };
   togglePopup();
