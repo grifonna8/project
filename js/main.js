@@ -200,12 +200,18 @@ document.addEventListener('DOMContentLoaded', function(){
   // слайдер
   const slider = () => {
     const slide = document.querySelectorAll('.portfolio-item'),
-          btn = document.querySelectorAll('.portfolio-btn'),
-          dot = document.querySelectorAll('.dot'),
-          slider = document.querySelector('.portfolio-content');
+          slider = document.querySelector('.portfolio-content'),
+          dotWrapper = document.querySelector('.portfolio-dots');
     let currentSlide = 0, 
-        interval;
-
+        interval, slidesQuant;
+        
+    slidesQuant = slide.length - 1;
+    for(let i = 0; i <= slidesQuant; i++){
+      let newDot = document.createElement('li');
+      newDot.className = 'dot';
+      dotWrapper.appendChild(newDot); 
+    }
+    let dot = document.querySelectorAll('.dot');
     const prevSlide = (elem, index, strClass) => {
       elem[index].classList.remove(strClass);
     };
