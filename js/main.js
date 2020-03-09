@@ -285,7 +285,55 @@ document.addEventListener('DOMContentLoaded', function(){
     startSlide(1500);
 
   };
-
   slider();
 
+  // смена картинок в Наша команда
+  const changePictures = () => {
+    const photos = document.querySelectorAll('[data-img]'),
+          commandWrapper = document.querySelector('.command'),
+          address = [];
+
+    photos.forEach((item) => {
+      address.push(item.src);
+    });
+
+    commandWrapper.addEventListener('mouseover', (event) => {
+      photos.forEach((item) => {
+        if (event.target === item){
+          item.src = item.dataset.img;
+        }
+      });
+    });
+    commandWrapper.addEventListener('mouseout', (event) => {
+      Array.from(photos);
+      for (let i = 0; i < photos.length; i++){
+        if (event.target === photos[i]){
+          photos[i].src = address[i];
+        }
+      }
+      
+    });
+  };
+  changePictures();
+
+  // валидация калькулятора
+  const validation = () => {
+    const square = document.querySelector('.calc-square'),
+          count = document.querySelector('.calc-count'),
+          day = document.querySelector('.calc-day'),
+          calcWrapper = document.querySelector('.calc');
+
+    calcWrapper.addEventListener('input', (event) => {
+      if (event.target === square){
+        square.value = square.value.replace(/[^0-9]/g, '');
+      }
+      if (event.target === count){
+        count.value = count.value.replace(/[^0-9]/g, '');
+      }
+      if (event.target === day){
+        day.value = day.value.replace(/[^0-9]/g, '');
+      }
+    });
+  };
+  validation();
 });
