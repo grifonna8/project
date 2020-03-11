@@ -353,6 +353,16 @@ document.addEventListener('DOMContentLoaded', function(){
         const typeValue = calcType.options[calcType.selectedIndex].value,
               squareValue = +calcSquare.value;
 
+        if (calcSquare.value.match(/^0{2,}/g)){
+          calcSquare.value = 0;
+        }
+        if (calcCount.value.match(/^0{2,}/g)){
+          calcCount.value = 0;
+        }
+        if (calcDay.value.match(/^0{2,}/g)){
+          calcDay.value = 0;
+        }
+        
         if(calcCount.value > 1){
           countValue += (calcCount.value - 1) / 10;
         }
