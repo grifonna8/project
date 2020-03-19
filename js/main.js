@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if (forms[i].contains(textField) && !textField.value.match(/[ ]+[А-Яа-яЁё]+/g)){
         event.preventDefault();
       }
-      if(!nameArr[i].value.match(/[ ]+[А-Яа-яЁё]+/g)){
+      if(!nameArr[i].value.match(/[ ]*[А-Яа-яЁё]+/g)){
         event.preventDefault(); 
       }
     })
