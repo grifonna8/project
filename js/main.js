@@ -518,71 +518,78 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // отправка формы AJAX
   const sendForm = () => {
-    const errorMessage = 'Что-то пошло не так',
+
+    return new Promise((resolve, reject) => {
+
+      const errorMessage = 'Что-то пошло не так',
           loadMessage = 'Загрузка',
           successMessage = 'Спасибо, мы скоро с вами свяжемся';
 
-    const form = document.getElementById('form1'),
-          form2= document.getElementById('form2'),
-          form3= document.getElementById('form3');
-    let formArr = [];
-    formArr = [form, form2, form3];
-    
-    for (let item of formArr){
-      const statusMessage = document.createElement('div');
-      statusMessage.textContent = 'Тут ваше сообщение';
-      statusMessage.style.cssText = 'font-size: 2rem; color: wheat';
+      const form = document.getElementById('form1'),
+            form2= document.getElementById('form2'),
+            form3= document.getElementById('form3');
+      let formArr = [];
+      formArr = [form, form2, form3];
+      
+      for (let item of formArr){
+        const statusMessage = document.createElement('div');
+        statusMessage.textContent = 'Тут ваше сообщение';
+        statusMessage.style.cssText = 'font-size: 2rem; color: wheat';
 
-      item.addEventListener('submit', (event) => {
-        event.preventDefault();
-        item.appendChild(statusMessage);
-        statusMessage.textContent = loadMessage;
-        const formData = new FormData(item);
-        let body = {};
+        item.addEventListener('submit', (event) => {
+          event.preventDefault();
+          item.appendChild(statusMessage);
+          statusMessage.textContent = loadMessage;
+          const formData = new FormData(item);
+          let body = {};
 
-        for(let val of formData.entries()){
-          body[val[0]] = val[1];
-        }
-        postData(body, () => {
-          statusMessage.textContent = successMessage;
-        }, (error) => {
-          statusMessage.textContent = errorMessage;
-          console.error(error);
+          for(let val of formData.entries()){
+            body[val[0]] = val[1];
+          }
+          postData(body, () => {
+            statusMessage.textContent = successMessage;
+            resolve(successMessage);
+          }, (error) => {
+            statusMessage.textContent = errorMessage;
+            reject(errorMessage);
+          });
         });
-      });
 
-      const postData = (body, outputData, errorData) => {
-        const request = new XMLHttpRequest();
+        const postData = (body, outputData, errorData) => {
+          const request = new XMLHttpRequest();
 
-        request.addEventListener('readystatechange', () => {
-          if(request.readyState !== 4){
-            return;
-          }
-          if (request.status === 200) {
-            outputData();
-            let itemInputsArr = [...item.querySelectorAll('input')];
-            for (let elem of itemInputsArr){
-              elem.value = '';
-              elem.style.cssText='border: 2px solid grey';
+          request.addEventListener('readystatechange', () => {
+            if(request.readyState !== 4){
+              return;
             }
-          } else {
-            errorData(request.status)
-          }
-        }) 
+            if (request.status === 200) {
+              outputData();
+              let itemInputsArr = [...item.querySelectorAll('input')];
+              for (let elem of itemInputsArr){
+                elem.value = '';
+                elem.style.cssText='border: 2px solid grey';
+              }
+            } else {
+              errorData(request.status);
+            }
+          }); 
 
-        request.open('POST', '../server.php');
-        request.setRequestHeader('Content-Type', 'application/json');
-        
-    
-        request.send(JSON.stringify(body));
+          request.open('POST', '../server.php');
+          request.setRequestHeader('Content-Type', 'application/json');
+          
+      
+          request.send(JSON.stringify(body));
+        };
+
       }
 
-
-
-    }
+    });
+    
       
   };
 
-  sendForm();
+  sendForm()
+  .then(data => console.log('success', data))
+  .catch(error => console.log('error', error));
 
 });
