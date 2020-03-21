@@ -331,7 +331,8 @@ document.addEventListener('DOMContentLoaded', function(){
       let errorTelVal = document.createElement('div');
       errorTelVal.classList = 'errorTel';
       errorTelVal.innerText = 'Введите телефон, используя + и цифры';
-      errorTelVal.style.cssText = `color: red; font-size: 12px; margin-top: -20px`;
+      errorTelVal.style.cssText = `color: red; font-size: 12px; margin-top: -5px; 
+      z-index: 2; position: relative`;
       telArr[destination].after(errorTelVal);
       errorTel = 0;
       console.log(errorTel);
@@ -353,7 +354,8 @@ document.addEventListener('DOMContentLoaded', function(){
       let errorNameVal = document.createElement('div');
       errorNameVal.classList = 'errorName';
       errorNameVal.innerText = 'Введите имя кириллицей';
-      errorNameVal.style.cssText = `color: red; font-size: 12px; margin-top: -20px`;
+      errorNameVal.style.cssText = `color: red; font-size: 12px; margin-top: -5px; 
+      z-index: 2; position: relative`;
       nameArr[destination].after(errorNameVal);
       errorName = 0;
       console.log(errorName);
@@ -375,7 +377,8 @@ document.addEventListener('DOMContentLoaded', function(){
       let errorTextFieldVal = document.createElement('div');
       errorTextFieldVal.classList = 'errorTextField';
       errorTextFieldVal.innerText = 'Только кириллицей';
-      errorTextFieldVal.style.cssText = `color: red; font-size: 12px; margin-top: -20px`;
+      errorTextFieldVal.style.cssText = `color: red; font-size: 12px; margin-top: -5px;
+      z-index: 2; position: relative`;
       let where = document.querySelector('.mess');
       where.after(errorTextFieldVal);
       errorTextField = 0;
@@ -395,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   for (let i = 0; i < buttons.length; i++){
     buttons[i].addEventListener('click', (event) => {
-      if (!telArr[i].value.match(/^[\+\]?[0-9]+/g)){
+      if (!telArr[i].value.match(/^[\+\]?[0-9]+$/g)){
         event.preventDefault();
         console.log('1');
         if (errorTel === true){
@@ -406,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function(){
           createErrorTel(i);
         }
       }
-      if (forms[i].contains(textField) && !textField.value.match(/[ ]*[А-Яа-яЁё]+/g)){
+      if (forms[i].contains(textField) && !textField.value.match(/[ ]*[А-Яа-яЁё]+$/g)){
         event.preventDefault();
         console.log('2');
         if (errorTextField === true){
@@ -417,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function(){
           createErrorTextField();
         }
       }
-      if(!nameArr[i].value.match(/[ ]*[А-Яа-яЁё]+/g)){
+      if(!nameArr[i].value.match(/[ ]*[А-Яа-яЁё]+$/g)){
         event.preventDefault(); 
         console.log('3');
         if (errorName === true){
@@ -519,43 +522,38 @@ document.addEventListener('DOMContentLoaded', function(){
   // отправка формы AJAX
   const sendForm = () => {
 
-    return new Promise((resolve, reject) => {
+    const errorMessage = 'Что-то пошло не так',
+        loadMessage = 'Загрузка',
+        successMessage = 'Спасибо, мы скоро с вами свяжемся';
 
-      const errorMessage = 'Что-то пошло не так',
-          loadMessage = 'Загрузка',
-          successMessage = 'Спасибо, мы скоро с вами свяжемся';
+    const form = document.getElementById('form1'),
+          form2= document.getElementById('form2'),
+          form3= document.getElementById('form3');
+    let formArr = [];
+    formArr = [form, form2, form3];
+    
+    for (let item of formArr){
+      const statusMessage = document.createElement('div');
+      statusMessage.textContent = 'Тут ваше сообщение';
+      statusMessage.style.cssText = 'font-size: 2rem; color: wheat';
 
-      const form = document.getElementById('form1'),
-            form2= document.getElementById('form2'),
-            form3= document.getElementById('form3');
-      let formArr = [];
-      formArr = [form, form2, form3];
-      
-      for (let item of formArr){
-        const statusMessage = document.createElement('div');
-        statusMessage.textContent = 'Тут ваше сообщение';
-        statusMessage.style.cssText = 'font-size: 2rem; color: wheat';
+      item.addEventListener('submit', (event) => {
+        event.preventDefault();
+        item.appendChild(statusMessage);
+        statusMessage.textContent = loadMessage;
+        const formData = new FormData(item);
+        let body = {};
 
-        item.addEventListener('submit', (event) => {
-          event.preventDefault();
-          item.appendChild(statusMessage);
-          statusMessage.textContent = loadMessage;
-          const formData = new FormData(item);
-          let body = {};
+        for(let val of formData.entries()){
+          body[val[0]] = val[1];
+        }
+        postData(body)
+            .then(data => console.log('success', data))
+            .catch(error => console.log('error', error));
+      });
 
-          for(let val of formData.entries()){
-            body[val[0]] = val[1];
-          }
-          postData(body, () => {
-            statusMessage.textContent = successMessage;
-            resolve(successMessage);
-          }, (error) => {
-            statusMessage.textContent = errorMessage;
-            reject(errorMessage);
-          });
-        });
-
-        const postData = (body, outputData, errorData) => {
+      const postData = (body, outputData, errorData) => {
+        return new Promise ((resolve, reject) => {
           const request = new XMLHttpRequest();
 
           request.addEventListener('readystatechange', () => {
@@ -563,33 +561,31 @@ document.addEventListener('DOMContentLoaded', function(){
               return;
             }
             if (request.status === 200) {
-              outputData();
+              statusMessage.textContent = successMessage;
+              resolve(successMessage);
               let itemInputsArr = [...item.querySelectorAll('input')];
               for (let elem of itemInputsArr){
                 elem.value = '';
                 elem.style.cssText='border: 2px solid grey';
               }
             } else {
-              errorData(request.status);
+              statusMessage.textContent = errorMessage;
+              reject(errorMessage);
             }
           }); 
 
           request.open('POST', '../server.php');
           request.setRequestHeader('Content-Type', 'application/json');
           
-      
           request.send(JSON.stringify(body));
-        };
+        });
+        
+      };
 
-      }
+    }
 
-    });
-    
-      
   };
 
-  sendForm()
-  .then(data => console.log('success', data))
-  .catch(error => console.log('error', error));
+  sendForm();
 
 });
