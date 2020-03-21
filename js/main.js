@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function(){
             .catch(error => console.log('error', error));
       });
 
-      const postData = (body, outputData, errorData) => {
+      const postData = (body) => {
         return new Promise ((resolve, reject) => {
           const request = new XMLHttpRequest();
 
