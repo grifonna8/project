@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   for (let i = 0; i < buttons.length; i++){
     buttons[i].addEventListener('click', (event) => {
-      if (!telArr[i].value.match(/^[\+\]?[0-9]+/g)){
+      if (!telArr[i].value.match(/^[\+\]?[0-9]+$/g)){
         event.preventDefault();
         console.log('1');
         if (errorTel === true){
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function(){
           createErrorTel(i);
         }
       }
-      if (forms[i].contains(textField) && !textField.value.match(/[ ]*[А-Яа-яЁё]+/g)){
+      if (forms[i].contains(textField) && !textField.value.match(/[ ]*[А-Яа-яЁё]+$/g)){
         event.preventDefault();
         console.log('2');
         if (errorTextField === true){
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function(){
           createErrorTextField();
         }
       }
-      if(!nameArr[i].value.match(/[ ]*[А-Яа-яЁё]+/g)){
+      if(!nameArr[i].value.match(/[ ]*[А-Яа-яЁё]+$/g)){
         event.preventDefault(); 
         console.log('3');
         if (errorName === true){
