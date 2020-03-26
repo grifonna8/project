@@ -30,12 +30,17 @@ const sendForm = () => {
             if (response.status !== 200){
               throw new Error ('not 200');
             }
-            console.log(response);
             statusMessage.textContent = successMessage;
+            const messageHide = setTimeout(function(){
+              statusMessage.textContent = '';
+            },6000);            
+            let itemInputsArr = [...item.querySelectorAll('input')];
+              for (let elem of itemInputsArr){
+                elem.value = '';
+              }
           }) 
           .catch ((error) => {
             statusMessage.textContent = errorMessage;
-            console.log(error);
           });
     });
 

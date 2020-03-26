@@ -21,7 +21,7 @@ import toggleMenu from "./modules/toggleMenu";
 import togglePopup from "./modules/togglePopup";
 
 // Timer вариант с setInterval
-countTimer('04 march 2020');
+countTimer('04 april 2020');
 
 // меню
 toggleMenu();

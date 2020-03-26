@@ -17,15 +17,12 @@ const formValidation = () => {
     z-index: 2; position: relative`;
     telArr[destination].after(errorTelVal);
     errorTel = 0;
-    console.log(errorTel);
     return errorTel;
     } else if (errorTel === 0){
       errorTel = true;
-      console.log(errorTel);
       let normalChild = document.querySelectorAll('.form-phone')[destination];
       let parent =  normalChild.parentNode;
       let errorChild = parent.children[1];
-      console.log(parent);
       parent.removeChild(errorChild);
       return errorTel;
     }
@@ -40,15 +37,12 @@ const formValidation = () => {
       z-index: 2; position: relative`;
       nameArr[destination].after(errorNameVal);
       errorName = 0;
-      console.log(errorName);
       return errorName;
     } else if (errorName === 0){
       errorName = true;
-      console.log(errorName);
       let normalChild = document.querySelectorAll('.form-name')[destination];
       let parent =  normalChild.parentNode;
       let errorChild = parent.children[1];
-      console.log(parent);
       parent.removeChild(errorChild);
       return errorName;
     }
@@ -64,15 +58,12 @@ const formValidation = () => {
       let where = document.querySelector('.mess');
       where.after(errorTextFieldVal);
       errorTextField = 0;
-      console.log(errorTextField);
       return errorTextField;
     } else if (errorTextField === 0){
       errorTextField = true;
-      console.log(errorTextField);
       let normalChild = document.querySelector('.mess');
       let parent =  normalChild.parentNode;
       let errorChild = parent.children[1];
-      console.log(parent);
       parent.removeChild(errorChild);
       return errorTextField;
     }
